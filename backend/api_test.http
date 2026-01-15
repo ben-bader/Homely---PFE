@@ -1,0 +1,77 @@
+# Login to get JWT token
+POST http://localhost:8082/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password"
+}
+
+###
+
+# Set token variable from login response (assuming response has "token" field)
+@token = {{response.body.token}}
+
+###
+
+# Create a property
+POST http://localhost:8082/api/properties
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Test Property",
+  "description": "A test property description",
+  "price": 100000,
+  "city": "Test City",
+  "type": "RENT"
+}
+
+###
+
+# Get all properties
+GET http://localhost:8082/api/properties
+Authorization: Bearer {{token}}
+
+###
+
+# Search properties
+GET http://localhost:8082/api/properties/search?city=Test%20City
+Authorization: Bearer {{token}}
+
+###
+
+# Create a conversation
+POST http://localhost:8082/api/chat/conversation
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "participant1Id": "123e4567-e89b-12d3-a456-426614174000",
+  "participant2Id": "123e4567-e89b-12d3-a456-426614174001"
+}
+
+###
+
+# Get user conversations (replace with actual userId)
+GET http://localhost:8082/api/chat/conversations?userId=123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+###
+
+# Send a message
+POST http://localhost:8082/api/chat/message
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "conversationId": "123e4567-e89b-12d3-a456-426614174002",
+  "senderId": "123e4567-e89b-12d3-a456-426614174000",
+  "content": "Test message"
+}
+
+###
+
+# Get conversation messages
+GET http://localhost:8082/api/chat/messages?conversationId=123e4567-e89b-12d3-a456-426614174002
+Authorization: Bearer {{token}}
