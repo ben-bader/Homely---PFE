@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.homely.common.enums.ListingType;
+import com.homely.common.enums.PropertyType;
 import com.homely.property.entity.Property;
 import com.homely.property.service.PropertyService;
 
@@ -27,9 +28,14 @@ public class PropertyController {
 
     @PostMapping
     public Property create(@RequestBody Property property) {
+  /*       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            throw new RuntimeException("Authentication required. Please provide a valid JWT token.");
+        } */
         return propertyService.create(property);
     }
 
+    
     @GetMapping("/{id}")
     public Property get(@PathVariable UUID id) {
         return propertyService.get(id);
@@ -47,5 +53,10 @@ public class PropertyController {
             @RequestParam(required = false) String city
     ) {
         return propertyService.search(type, minPrice, maxPrice, city);
+    }
+
+    @GetMapping("/type/{propertyType}")
+    public List<Property> findByPropertyType(@PathVariable PropertyType propertyType) {
+        return propertyService.findByPropertyType(propertyType);
     }
 }

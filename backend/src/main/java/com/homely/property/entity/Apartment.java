@@ -24,6 +24,7 @@ public class Apartment {
     private Property property;
 
     private int bedrooms;
+    private int bathrooms;
     private int floor;
     private boolean hasElevator;
 }

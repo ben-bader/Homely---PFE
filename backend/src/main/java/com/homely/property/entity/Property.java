@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.homely.common.base.BaseEntity;
 import com.homely.common.enums.ListingType;
+import com.homely.common.enums.PropertyType;
 import com.homely.user.entity.User;
 
 import jakarta.persistence.CascadeType;
@@ -32,6 +33,9 @@ public class Property extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ListingType listingType;
+
+    @Enumerated(EnumType.STRING)
+    private PropertyType propertyType;
 
     private String status;
     private String address;

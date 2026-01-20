@@ -1,11 +1,13 @@
 package com.homely.boost.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.homely.boost.entity.BoostPurchase;
 import com.homely.boost.repository.BoostPurchaseRepository;
+import com.homely.common.enums.PurchaseStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,18 +15,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoostService {
 
-    private final BoostPurchaseRepository boostRepository;
+    private final BoostPurchaseRepository boostPurchaseRepository;
 
     public BoostPurchase create(BoostPurchase boost) {
-        return boostRepository.save(boost);
+        return boostPurchaseRepository.save(boost);
     }
+
     public BoostPurchase getById(UUID id) {
-        return boostRepository.findById(id).orElse(null);
+        return boostPurchaseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Boost not found"));
     }
-    public BoostPurchase getBySellerId(UUID sellerId) {
-        return boostRepository.findById(sellerId).orElse(null);
+
+    public List<BoostPurchase> getByStatus(PurchaseStatus status) {
+        return boostPurchaseRepository.findByStatus(status);
     }
-    public BoostPurchase getBBSStatus(String status) {
-        return boostRepository.findById(UUID.fromString(status)).orElse(null);
+
+    public List<BoostPurchase> getBySellerId(UUID sellerId) {
+        return boostPurchaseRepository.findBySellerId(sellerId);
+    }
+
+    public List<BoostPurchase> getAll() {
+        return boostPurchaseRepository.findAll();
     }
 }

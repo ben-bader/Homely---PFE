@@ -21,6 +21,12 @@ public class ChatService {
     public List<Conversation> getUserConversations(java.util.UUID userId) {
         return conversationRepository.findByUserAIdOrUserBId(userId, userId);
     }
+    public List<Message> getAllMessages() {
+        return messageRepository.findAll();
+    }
+    public List<Conversation> getAllConversations() {
+        return conversationRepository.findAll();
+    }
     public List<Message> getConversationMessages(java.util.UUID conversationId) {
         return messageRepository.findByConversationIdOrderByIdAsc(conversationId);
     }

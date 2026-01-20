@@ -33,7 +33,7 @@ public class ChatController {
     public List<Conversation> getUserConversations(@RequestParam UUID userId) {
         return chatService.getUserConversations(userId);
     }
-
+    
     @GetMapping("/messages")
     public List<Message> getConversationMessages(@RequestParam UUID conversationId) {
         return chatService.getConversationMessages(conversationId);
@@ -43,5 +43,16 @@ public class ChatController {
     public Message send(@RequestBody Message m) {
         return chatService.sendMessage(m);
     }
+
+    @GetMapping("/messages/all")
+    public List<Message> getAllMessages() {
+        return chatService.getAllMessages();
+    }
+    @GetMapping("/conversations/all")
+    public List<Conversation> getAllConversations() {
+        return chatService.getAllConversations();
+    
+    }
+    
 }
 

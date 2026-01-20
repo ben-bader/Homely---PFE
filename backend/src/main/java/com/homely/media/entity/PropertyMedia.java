@@ -26,6 +26,6 @@ public class PropertyMedia extends BaseEntity {
 
     private String url;
     private String thumbnailUrl;
-    private int order;
+    private int displayOrder;
     private int durationSeconds;
 }

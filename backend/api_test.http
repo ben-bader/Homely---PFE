@@ -1,77 +1,210 @@
-# Login to get JWT token
-POST http://localhost:8082/api/auth/login
+### Register a new user
+@baseUrl = http://localhost:8082/api
+
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-  "email": "test@example.com",
+    "email": "testuser@example.com",
+    "password": "password",
+    "name": "Test User",
+    "phone": "1234567890",
+    "role": "CLIENT"
+}
+###
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "testuser2@example.com",
+    "password": "password",
+    "name": "Test User",
+    "phone": "1234567890",
+    "role": "ADMIN"
+}
+
+###
+
+# @name auth
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
   "password": "password"
 }
 
 ###
 
-# Set token variable from login response (assuming response has "token" field)
-@token = {{response.body.token}}
+# Set token variable from login response
+@token = {{auth.response.body.token}}
 
 ###
 
-# Create a property
-POST http://localhost:8082/api/properties
+GET {{baseUrl}}/test/whoami
+Authorization: Bearer  {{token}}
+
+###
+POST {{baseUrl}}/profile
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "title": "Test Property",
-  "description": "A test property description",
-  "price": 100000,
-  "city": "Test City",
-  "type": "RENT"
+  "bio": "Passionate traveler and real estate enthusiast looking for a cozy home.",
+  "address": "123 Main Street, Casablanca, Morocco",
+  "verified": false,
+  "idDocumentUrl": "https://storage.homely.com/docs/id-99.pdf"
+}
+###
+
+# Create an apartment
+POST {{baseUrl}}/properties
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Beautiful 2BR Apartment in Downtown",
+  "description": "Spacious apartment with modern amenities, located in the heart of the city. Features include hardwood floors, updated kitchen, and large windows with natural light.",
+  "price": 150000,
+  "address": "123 Main Street, Casablanca, Morocco",
+  "listingType": "RENT",
+  "longitude": -7.589843,
+  "latitude": 33.573110,
+  "propertyType": "APARTMENT",
+  "currency": "USD",
+  "status": "AVAILABLE",
+  "apartment": {
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "floor": 5,
+    "hasElevator": true
+  }
 }
 
 ###
 
 # Get all properties
-GET http://localhost:8082/api/properties
+GET {{baseUrl}}/properties
 Authorization: Bearer {{token}}
 
 ###
 
 # Search properties
-GET http://localhost:8082/api/properties/search?city=Test%20City
+GET {{baseUrl}}/properties/search?listingType=RENT
 Authorization: Bearer {{token}}
 
 ###
 
 # Create a conversation
-POST http://localhost:8082/api/chat/conversation
+POST {{baseUrl}}/chat/conversation
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "participant1Id": "123e4567-e89b-12d3-a456-426614174000",
-  "participant2Id": "123e4567-e89b-12d3-a456-426614174001"
+  "userA":{
+    "id": "13f049ae-1e58-4a1c-bfe5-daa0a90137b2"
+    },
+  "userB": {
+    "id": "55bdf3e7-fecf-4ce0-a55d-1e123cd16982"
+    }
 }
 
 ###
 
 # Get user conversations (replace with actual userId)
-GET http://localhost:8082/api/chat/conversations?userId=123e4567-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/chat/conversations
 Authorization: Bearer {{token}}
 
 ###
 
 # Send a message
-POST http://localhost:8082/api/chat/message
+POST {{baseUrl}}/chat/message
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "conversationId": "123e4567-e89b-12d3-a456-426614174002",
-  "senderId": "123e4567-e89b-12d3-a456-426614174000",
-  "content": "Test message"
+  "conversation":{
+    "id" : "606a604d-7dff-4380-8657-f32009119d31"
+    },
+  "senderId": "55bdf3e7-fecf-4ce0-a55d-1e123cd16982",
+  "body": "Test message",
+  "attachments" : {
+    "type" : "IMAGE",
+    "url" : "https://storage.homely.com/messages/image-12345.png"
+  }
 }
 
 ###
 
 # Get conversation messages
-GET http://localhost:8082/api/chat/messages?conversationId=123e4567-e89b-12d3-a456-426614174002
+GET {{baseUrl}}/chat/messages/all
 Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/chat/conversations/all
+###
+GET {{baseUrl}}/users
+
+
+
+###
+
+GET {{baseUrl}}/boost
+Authorization: Bearer {{token}}
+
+###
+
+# Get boost history
+###
+# Create a boost purchase
+POST {{baseUrl}}/boost
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "seller": {
+    "id": "13f049ae-1e58-4a1c-bfe5-daa0a90137b2"
+  },
+  "property": {
+    "id": "6f1ed7d2-424a-4cd8-b095-485a0ffdab5d"
+  },
+  "amount": 29.99,
+  "currency": "USD",
+  "durationDays": 7,
+  "status": "PENDING",
+  "paymentProviderRef": "txn_12345"
+}
+
+###
+# Get boost by ID
+GET {{baseUrl}}/boost/481836da-9969-46d1-8838-11bd7a395643
+Authorization: Bearer {{token}}
+
+###
+
+GET {{baseUrl}}/boost/f1dcf007-204b-476d-b69c-e0412fd628df
+Authorization: Bearer {{token}}
+
+###
+# Get boosts by status
+GET {{baseUrl}}/boost/status?status=PENDING
+Authorization: Bearer {{token}}
+
+###
+# Get boosts by status (COMPLETED)
+GET {{baseUrl}}/boost?status=COMPLETED
+Authorization: Bearer {{token}}
+
+###
+# Get boosts by seller ID
+
+# Get boosts by seller ID (different seller)
+GET {{baseUrl}}/boost?sellerId=13f049ae-1e58-4a1c-bfe5-daa0a90137b2
+Authorization: Bearer {{token}}
+
+###
+GET {{baseUrl}}/boost/all
+
+# Profiles 
+###
+GET {{baseUrl}}/profiles/55bdf3e7-fecf-4ce0-a55d-1e123cd16982

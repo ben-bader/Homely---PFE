@@ -42,5 +42,10 @@ public class UserService {
         user.setActive(false);
         userRepository.save(user);
     }
+    public void activate(UUID id) {
+        User user = getById(id);
+        user.setActive(true);
+        userRepository.save(user);
+    }
 }
 

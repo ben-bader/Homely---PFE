@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.homely.auth.dto.AuthResponse;
 import com.homely.auth.dto.LoginRequest;
 import com.homely.auth.dto.RegisterRequest;
+import com.homely.user.entity.Profile;
 import com.homely.user.entity.User;
 import com.homely.user.repository.UserRepository;
 
@@ -19,13 +20,21 @@ public class AuthService {
     private final JwtService jwtService;
 
     public AuthResponse register(RegisterRequest request){
-        if (userRepository.findByEmail(request.getEmail()) != null) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setName(request.getName());
+        user.setPhone(request.getPhone());
         user.setRole(request.getRole());
+
+        // Create profile automatically
+        Profile profile = new Profile();
+        profile.setUser(user);
+        user.setProfile(profile);
+
         userRepository.save(user);
         return new AuthResponse(jwtService.generateToken(user));
     }
